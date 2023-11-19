@@ -15,10 +15,12 @@ const UserRoute = require ("./Routes/UserRoute.js")
 //Middleware
 app.use(bodyParser.json({ limit: "30mb", extended: true }));
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
-app.use(cors({
-  origin: "http://localhost:3000",
+app.use(cors(
+  // {
+  // origin: "http://localhost:3000",
   // origin: "https://b39-ii-capstone-foodtokengenerator-frontend.vercel.app",
-}));
+// }
+));
 app.use(express.json());
 
 // const PORT = process.env.PORT;
