@@ -36,8 +36,10 @@ try{
             profileImage :findUser.profileImage
         });
 await newPost.save();
+const findall = await RecipeModel.find({userId:userId});
+// console.log(findLength.length)
 
-res.status(200).json({ message: "Recipe Created Successfully" });
+res.status(200).json({findall, message: "Recipe Created Successfully" });
     }else{
         res.status(200).json({ message: "Id Not Found" });
     }
@@ -48,10 +50,9 @@ res.status(200).json({ message: "Recipe Created Successfully" });
 
 exports.getAllRecipe = async(req,res)=>{
     try {
-        let recipes = await RecipeModel.find();
-        // recipes= recipes.map((x)=>{
-        //     const {title, ...otherDetails} = x._doc;
-        //     return otherDetails;
+        let recipes = await RecipeModel.find({private:"false"});
+        // const ans= recipes.filter((x)=>{
+        //     return x.private!==true;
         // })
         res.status(200).json(recipes)
     } catch (error) {
@@ -64,20 +65,27 @@ exports.getAllRecipe = async(req,res)=>{
     try{
         const find = await RecipeModel.find({userId:id});
         
-        res.status(200).json({ find, message: "finded" });
-    } catch (error) {
+if(find){
+    res.status(200).json({ find, message: "finded" });
+
+}   else{
+    res.status(200).json({ message: "No posts" });
+
+}
+ } catch (error) {
         res.status(500).json(error);
       }
   }
 
   exports.deleteRecipe = async(req,res)=>{
     const id=req.params.id;
-    const{userId}=req.body;
+    // const{userId}=req.body;
     try {
         const find = await RecipeModel.findById(id);
-        if(find.userId === userId){
+        if(find){
             await RecipeModel.findByIdAndDelete(id);
-            res.status(200).json("Recipe deleted Successfully");
+            const findall = await RecipeModel.find({userId:find.userId});
+            res.status(200).json({findall,message:"Recipe deleted Successfully"});
         }else{
             res.status(200).json("You dont have permission");
         }
@@ -91,7 +99,7 @@ exports.updateRecipe=async(req,res)=>{
         recipeImage_publicId}= req.body;
 
         // const currentOne = await RecipeModel.findById(id);
-        const findRecipe = await RecipeModel.find({title: title});
+        const findRecipe = await RecipeModel.find({title: title.toLowerCase()});
 
         const check = findRecipe.some(fun);
         function fun(findRecipe){
@@ -112,8 +120,11 @@ exports.updateRecipe=async(req,res)=>{
        if(check === false || check2[0]._id.toString()===id ){
         const recipe = await RecipeModel.findByIdAndUpdate(id, req.body, {
             new: true,});
+
           if (recipe) {
-            res.status(200).json({ recipe,message:"Updated Successfully"});
+const findall = await RecipeModel.find({userId:userId});
+
+            res.status(200).json({ findall,recipe,message:"Updated Successfully"});
           }
         }else if(check === true){
             res.status(200).json({ message: "You already created this title, Try another" });

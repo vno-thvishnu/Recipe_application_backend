@@ -95,18 +95,40 @@ exports.followUser = async (req, res) => {
   };
   exports.updateUser = async (req, res) => {
     const id = req.params.id;
-    
+    const{userName,profileImage,profileImage_publicId,coverImage,coverImage_publicId,
+      bio,workingAs}=req.body
+      
+      const findUser = await UserModel.findOne({userName:userName});
+      // console.log(findUser)
+      // console.log(findUser._id.toString())
+      // console.log(id)
+      // console.log(findUser._id.toString() !==id)
       try {
+   if(!findUser ||findUser._id.toString() ===id ){
+    
+    const user = await UserModel.findByIdAndUpdate(id, req.body, {
+      new: true,
+    });
+
+    if (user) {
+      const { password, ...otherDetails } = user._doc;
+
+      res.status(200).json({ otherDetails,message:"Updated successfully" });
+    }
+  }else if(findUser._id.toString() !==id){
+    const user = await UserModel.findByIdAndUpdate(id,
+      {profileImage,profileImage_publicId,coverImage,coverImage_publicId,
+      bio,workingAs}, {
+      new: true,
+    });
+
+    if (user) {
+      const { password, ...otherDetails } = user._doc;
+
+      res.status(200).json({ otherDetails,message:"Try another username" });
+    }
   
-        const user = await UserModel.findByIdAndUpdate(id, req.body, {
-          new: true,
-        });
-  
-        if (user) {
-          const { password, ...otherDetails } = user._doc;
-  
-          res.status(200).json({ otherDetails,message:"Updated Successfully" });
-        }
+  }
       } catch (error) {
         res.status(500).json(error);
       }

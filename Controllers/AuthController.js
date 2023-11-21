@@ -4,7 +4,7 @@ const bcrypt = require("bcrypt");
 
 exports.registerUser = async(req,res)=>{
     delete req.body.confirmpassword;
-    const {userEmail,password,userName,profileImage,coverImage,bio,workingsAs}=req.body;
+    const {userEmail,password,userName,profileImage,coverImage,bio,workingAs}=req.body;
     const findUserEmail = await UserModel.findOne({ userEmail: userEmail });
     const finduserName = await UserModel.findOne({ userName: userName });
 try{
@@ -17,7 +17,7 @@ try{
             userName,
             password: hashpassword,
             bio:"",
-            workingsAs:"",
+            workingAs:"",
             profileImage:"",
             coverImage:"",
           });

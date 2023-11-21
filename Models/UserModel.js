@@ -18,7 +18,7 @@ const UserSchema=mongoose.Schema({
     coverImage: String,
     coverImage_publicId: String,
     bio: String,
-    workingsAs:String,
+    workingAs:String,
     likedPosts:[],
     ownPosts:[],
     followers: [],
